@@ -2,14 +2,15 @@ package server
 
 import (
 	"encoding/json"
+	"net/http"
+	"strconv"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	c "github.com/tockins/realize/settings"
 	w "github.com/tockins/realize/watcher"
 	"golang.org/x/net/websocket"
 	"gopkg.in/urfave/cli.v2"
-	"net/http"
-	"strconv"
 )
 
 // Server struct contains server informations
@@ -85,7 +86,7 @@ func (s *Server) Start(p *cli.Context) (err error) {
 		//e.GET("/ws", echo.WrapHandler(s.projects()))
 		e.GET("/ws", s.hello)
 
-		go e.Start(string(s.Settings.Server.Host) + ":" + strconv.Itoa(s.Settings.Server.Port))
+		go e.Start("http://" + string(s.Settings.Server.Host) + ":" + strconv.Itoa(s.Settings.Server.Port))
 		if s.Open || p.Bool("open") {
 			_, err = Open("http://" + string(s.Settings.Server.Host) + ":" + strconv.Itoa(s.Settings.Server.Port))
 			if err != nil {
